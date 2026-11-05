@@ -1,0 +1,16 @@
+{% extends "cuentas/base.html" %}
+{% load humanize %}
+
+{% block contenido %}
+    <h1>{{ cuenta.servicio }} — {{ cuenta.mes }}</h1>
+    <p>Valor: ${{ cuenta.valor|intcomma }}</p>
+    <p>Vence: {{ cuenta.vence|date:"j F Y" }}</p>
+    <p>{% if cuenta.pagada %}Pagada{% else %}Por pagar{% endif %}</p>
+    <p>
+        <a href="{% url 'cuentas:editar' cuenta.id %}">Editar</a>
+        |
+        <a href="{% url 'cuentas:borrar' cuenta.id %}">Borrar</a>
+        |
+        <a href="{% url 'cuentas:lista' %}">Volver a la lista</a>
+    </p>
+{% endblock %}

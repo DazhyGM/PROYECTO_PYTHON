@@ -1,0 +1,14 @@
+{% extends "cuentas/base.html" %}
+{% load humanize %}
+
+{% block contenido %}
+<h1>{{ servicio.nombre }}</h1>
+
+<ul>
+{% for cuenta in servicio.cuenta_set.all %}
+    <li>{{ cuenta.mes }} — ${{ cuenta.valor|intcomma }} — {% if cuenta.pagada %}pagada{% else %}por pagar{% endif %}</li>
+{% endfor %}
+</ul>
+
+<a href="{% url 'cuentas:detail' servicio.id %}">¿Pagar otra?</a>
+{% endblock %}

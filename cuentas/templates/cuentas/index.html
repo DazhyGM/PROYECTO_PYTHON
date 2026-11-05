@@ -1,0 +1,13 @@
+{% extends "cuentas/base.html" %}
+
+{% block contenido %}
+    {% if servicio_list %}
+        <ul>
+        {% for servicio in servicio_list %}
+            <li><a href="{% url 'cuentas:detail' servicio.id %}">{{ servicio.nombre }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay servicios.</p>
+    {% endif %}
+{% endblock %}

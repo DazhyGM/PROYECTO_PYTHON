@@ -1,0 +1,20 @@
+{% extends "cuentas/base.html" %}
+{% load humanize %}
+
+{% block contenido %}
+    <h1>Ya pagadas</h1>
+    <p>Van ${{ total|intcomma }} en {{ cuentas|length }} cuentas.</p>
+
+    {% if cuentas %}
+        <ul>
+        {% for cuenta in cuentas %}
+            <li>
+                <a href="{% url 'cuentas:detail' cuenta.servicio.id %}">{{ cuenta.servicio }} — {{ cuenta.mes }}</a>
+                (${{ cuenta.valor|intcomma }})
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Todavía no hay cuentas pagadas. <a href="{% url 'cuentas:index' %}">Ver los servicios.</a></p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "cuentas/base.html" %}
+{% load humanize %}
+
+{% block contenido %}
+    <h1>Cuentas</h1>
+    {% if cuenta_list %}
+        <ul>
+        {% for cuenta in cuenta_list %}
+            <li>
+                <a href="{% url 'cuentas:ver' cuenta.id %}">{{ cuenta.servicio }} — {{ cuenta.mes }}</a>
+                (${{ cuenta.valor|intcomma }}{% if cuenta.pagada %}, pagada{% else %}, por pagar{% endif %})
+                — <a href="{% url 'cuentas:editar' cuenta.id %}">Editar</a>
+                — <a href="{% url 'cuentas:borrar' cuenta.id %}">Borrar</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay cuentas.</p>
+    {% endif %}
+    <p><a href="{% url 'cuentas:crear' %}">Nueva cuenta</a></p>
+{% endblock %}

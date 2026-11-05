@@ -1,0 +1,17 @@
+{% extends "cuentas/base.html" %}
+{% load humanize %}
+
+{% block contenido %}
+<form action="{% url 'cuentas:pagar' servicio.id %}" method="post">
+{% csrf_token %}
+<fieldset>
+    <legend><h1>{{ servicio.nombre }}</h1></legend>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    {% for cuenta in servicio.cuenta_set.all %}
+        <input type="radio" name="cuenta" id="cuenta{{ forloop.counter }}" value="{{ cuenta.id }}">
+        <label for="cuenta{{ forloop.counter }}">{{ cuenta.mes }} — ${{ cuenta.valor|intcomma }}{% if cuenta.pagada %} (ya pagada){% endif %}</label><br>
+    {% endfor %}
+</fieldset>
+<input type="submit" value="Marcar como pagada">
+</form>
+{% endblock %}

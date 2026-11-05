@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Cuentas de la casa</title>
+</head>
+<body>
+    <p>
+        <a href="{% url 'cuentas:index' %}">Servicios</a>
+        |
+        <a href="{% url 'cuentas:lista' %}">Cuentas</a>
+        |
+        <a href="{% url 'cuentas:crear' %}">Nueva cuenta</a>
+        |
+        <a href="{% url 'cuentas:pagadas' %}">Ya pagadas</a>
+        |
+        <a href="/admin/">Administrador</a>
+    </p>
+    <hr>
+    {% block contenido %}{% endblock %}
+</body>
+</html>

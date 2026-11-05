@@ -1,0 +1,32 @@
+{% extends "cuentas/base.html" %}
+
+{% block contenido %}
+<form action="{% url 'cuentas:editar' cuenta.id %}" method="post">
+{% csrf_token %}
+<fieldset>
+    <legend><h1>Editar {{ cuenta.servicio }} — {{ cuenta.mes }}</h1></legend>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    {% for servicio in servicio_list %}
+        <input type="radio" name="servicio" id="servicio{{ forloop.counter }}" value="{{ servicio.id }}" {% if servicio.id == servicio_id %}checked{% endif %}>
+        <label for="servicio{{ forloop.counter }}">{{ servicio.nombre }}</label><br>
+    {% endfor %}
+    <p>
+        <label for="mes">Mes</label><br>
+        <input type="text" name="mes" id="mes" value="{{ mes }}">
+    </p>
+    <p>
+        <label for="valor">Valor</label><br>
+        <input type="text" name="valor" id="valor" value="{{ valor }}">
+    </p>
+    <p>
+        <label for="vence">Vence (AAAA-MM-DD)</label><br>
+        <input type="text" name="vence" id="vence" value="{{ vence }}">
+    </p>
+    <p>
+        <input type="checkbox" name="pagada" id="pagada" {% if pagada %}checked{% endif %}>
+        <label for="pagada">Pagada</label>
+    </p>
+</fieldset>
+<input type="submit" value="Guardar">
+</form>
+{% endblock %}
