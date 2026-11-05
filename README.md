@@ -9,12 +9,15 @@ En la tabla `Cuenta` también hay formularios para crear, ver, editar y borrar.
 ## Cómo correrla
 
 ```bat
-venv\Scripts\activate
-python manage.py migrate
-python manage.py runserver
+1. Clonar repositorio
+2. Crear entorno virtual: py -m venv venv
+3. Activar el entorno virtual: venv\Scripts\activate
+4. Instalar dependencias: pip install -r requirements.txt
+5. Realizar migraciones: python manage.py migrate
+6. Ejecutar servidor: python manage.py runserver
 ```
 
-Abre http://127.0.0.1:8000/
+La pagina abre en http://127.0.0.1:8000/
 
 | Dirección | Qué muestra |
 | --- | --- |
