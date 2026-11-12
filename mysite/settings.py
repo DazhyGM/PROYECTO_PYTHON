@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-recetario-de-casa-solo-para-la-practica-local'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -122,3 +122,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = "cuentas:entrar"
+LOGIN_REDIRECT_URL = "cuentas:index"

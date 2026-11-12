@@ -2,19 +2,22 @@
 {% load humanize %}
 
 {% block contenido %}
-    <h1>Ya pagadas</h1>
-    <p>Van ${{ total|intcomma }} en {{ cuentas|length }} cuentas.</p>
+<h1>Ya pagadas</h1>
+<p class="resumen">Van <strong>${{ total|intcomma }}</strong> en {{ cuentas|length }} cuentas.</p>
 
-    {% if cuentas %}
-        <ul>
-        {% for cuenta in cuentas %}
-            <li>
-                <a href="{% url 'cuentas:detail' cuenta.servicio.id %}">{{ cuenta.servicio }} — {{ cuenta.mes }}</a>
-                (${{ cuenta.valor|intcomma }})
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>Todavía no hay cuentas pagadas. <a href="{% url 'cuentas:index' %}">Ver los servicios.</a></p>
-    {% endif %}
+{% if cuentas %}
+    <ul class="filas">
+    {% for cuenta in cuentas %}
+        <li>
+            <div>
+                <a class="nombre" href="{% url 'cuentas:detail' cuenta.servicio.id %}">{{ cuenta.servicio }} — {{ cuenta.mes }}</a>
+                <p class="meta">${{ cuenta.valor|intcomma }}</p>
+            </div>
+            <span class="estado pagada{% if cuenta.alcance == 'propia' %} propia{% endif %}">Pagada</span>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p class="vacio">Todavía no hay cuentas pagadas. <a href="{% url 'cuentas:servicios' %}">Ver los servicios.</a></p>
+{% endif %}
 {% endblock %}

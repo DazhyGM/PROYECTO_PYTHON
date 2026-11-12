@@ -2,20 +2,31 @@
 {% load humanize %}
 
 {% block contenido %}
-    <h1>Cuentas</h1>
-    {% if cuenta_list %}
-        <ul>
-        {% for cuenta in cuenta_list %}
-            <li>
-                <a href="{% url 'cuentas:ver' cuenta.id %}">{{ cuenta.servicio }} — {{ cuenta.mes }}</a>
-                (${{ cuenta.valor|intcomma }}{% if cuenta.pagada %}, pagada{% else %}, por pagar{% endif %})
-                — <a href="{% url 'cuentas:editar' cuenta.id %}">Editar</a>
-                — <a href="{% url 'cuentas:borrar' cuenta.id %}">Borrar</a>
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No hay cuentas.</p>
-    {% endif %}
-    <p><a href="{% url 'cuentas:crear' %}">Nueva cuenta</a></p>
+<h1>Cuentas</h1>
+{% if cuenta_list %}
+    <ul class="filas">
+    {% for cuenta in cuenta_list %}
+        <li>
+            <div>
+                <a class="nombre" href="{% url 'cuentas:ver' cuenta.id %}">{{ cuenta.servicio }} — {{ cuenta.mes }}</a>
+                <p class="meta">${{ cuenta.valor|intcomma }} · {{ cuenta.get_alcance_display }}</p>
+            </div>
+            <span class="estado {% if cuenta.pagada %}pagada{% else %}pendiente{% endif %}{% if cuenta.alcance == 'propia' %} propia{% endif %}">{% if cuenta.pagada %}Pagada{% else %}Por pagar{% endif %}</span>
+            <div class="acciones">
+                {% if not cuenta.pagada %}
+                <form action="{% url 'cuentas:marcar' cuenta.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Marcar como pagada</button>
+                </form>
+                {% endif %}
+                <a href="{% url 'cuentas:editar' cuenta.id %}">Editar</a>
+                <a class="peligro" href="{% url 'cuentas:borrar' cuenta.id %}">Borrar</a>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p class="vacio">No hay cuentas.</p>
+{% endif %}
+<p><a class="boton" href="{% url 'cuentas:crear' %}">Nueva cuenta</a></p>
 {% endblock %}

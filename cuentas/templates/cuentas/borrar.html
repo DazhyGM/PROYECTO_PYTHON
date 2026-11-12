@@ -1,10 +1,12 @@
 {% extends "cuentas/base.html" %}
 
 {% block contenido %}
-<h1>Borrar {{ cuenta.servicio }} — {{ cuenta.mes }}</h1>
-<form action="{% url 'cuentas:borrar' cuenta.id %}" method="post">
-{% csrf_token %}
-<input type="submit" value="Borrar">
-</form>
-<p><a href="{% url 'cuentas:ver' cuenta.id %}">Cancelar</a></p>
+<section class="aviso">
+    <h1>Borrar {{ cuenta.servicio }} — {{ cuenta.mes }}</h1>
+    <form action="{% url 'cuentas:borrar' cuenta.id %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Borrar">
+    </form>
+    <p class="pie"><a href="{% url 'cuentas:ver' cuenta.id %}">Cancelar</a></p>
+</section>
 {% endblock %}

@@ -2,15 +2,39 @@
 {% load humanize %}
 
 {% block contenido %}
+<article class="ficha">
     <h1>{{ cuenta.servicio }} — {{ cuenta.mes }}</h1>
-    <p>Valor: ${{ cuenta.valor|intcomma }}</p>
-    <p>Vence: {{ cuenta.vence|date:"j F Y" }}</p>
-    <p>{% if cuenta.pagada %}Pagada{% else %}Por pagar{% endif %}</p>
-    <p>
+    <dl>
+        <div>
+            <dt>Valor</dt>
+            <dd>${{ cuenta.valor|intcomma }}</dd>
+        </div>
+        <div>
+            <dt>Vence</dt>
+            <dd>{{ cuenta.vence|date:"j F Y" }}</dd>
+        </div>
+        <div>
+            <dt>Tipo</dt>
+            <dd>{{ cuenta.get_alcance_display }}</dd>
+        </div>
+        <div>
+            <dt>Estado</dt>
+            <dd>
+                <span class="estado {% if cuenta.pagada %}pagada{% else %}pendiente{% endif %}{% if cuenta.alcance == 'propia' %} propia{% endif %}">{% if cuenta.pagada %}Pagada{% else %}Por pagar{% endif %}</span>
+            </dd>
+        </div>
+    </dl>
+    <div class="acciones">
+        {% if not cuenta.pagada %}
+        <form action="{% url 'cuentas:marcar' cuenta.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="volver" value="ver">
+            <button type="submit">Marcar como pagada</button>
+        </form>
+        {% endif %}
         <a href="{% url 'cuentas:editar' cuenta.id %}">Editar</a>
-        |
-        <a href="{% url 'cuentas:borrar' cuenta.id %}">Borrar</a>
-        |
+        <a class="peligro" href="{% url 'cuentas:borrar' cuenta.id %}">Borrar</a>
         <a href="{% url 'cuentas:lista' %}">Volver a la lista</a>
-    </p>
+    </div>
+</article>
 {% endblock %}
