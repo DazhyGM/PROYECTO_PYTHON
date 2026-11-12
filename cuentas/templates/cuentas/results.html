@@ -4,11 +4,21 @@
 {% block contenido %}
 <h1>{{ servicio.nombre }}</h1>
 
-<ul>
-{% for cuenta in servicio.cuenta_set.all %}
-    <li>{{ cuenta.mes }} — ${{ cuenta.valor|intcomma }} — {% if cuenta.pagada %}pagada{% else %}por pagar{% endif %}</li>
+{% if cuentas %}
+<ul class="filas">
+{% for cuenta in cuentas %}
+    <li>
+        <div>
+            <span class="nombre">{{ cuenta.mes }}</span>
+            <p class="meta">${{ cuenta.valor|intcomma }}</p>
+        </div>
+        <span class="estado {% if cuenta.pagada %}pagada{% else %}pendiente{% endif %}{% if cuenta.alcance == 'propia' %} propia{% endif %}">{% if cuenta.pagada %}Pagada{% else %}Por pagar{% endif %}</span>
+    </li>
 {% endfor %}
 </ul>
+{% else %}
+<p class="vacio">No tienes cuentas de este servicio.</p>
+{% endif %}
 
-<a href="{% url 'cuentas:detail' servicio.id %}">¿Pagar otra?</a>
+<p class="pie"><a href="{% url 'cuentas:detail' servicio.id %}">¿Pagar otra?</a></p>
 {% endblock %}

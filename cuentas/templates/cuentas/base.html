@@ -1,22 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cuentas de la casa</title>
+    <link rel="stylesheet" href="{% static 'cuentas/estilos.css' %}">
 </head>
 <body>
-    <p>
-        <a href="{% url 'cuentas:index' %}">Servicios</a>
-        |
-        <a href="{% url 'cuentas:lista' %}">Cuentas</a>
-        |
-        <a href="{% url 'cuentas:crear' %}">Nueva cuenta</a>
-        |
-        <a href="{% url 'cuentas:pagadas' %}">Ya pagadas</a>
-        |
-        <a href="/admin/">Administrador</a>
-    </p>
-    <hr>
-    {% block contenido %}{% endblock %}
+    <header class="barra">
+        <a class="marca" href="{% if user.is_authenticated %}{% url 'cuentas:index' %}{% else %}{% url 'cuentas:entrar' %}{% endif %}">Cuentas de la casa</a>
+        {% if user.is_authenticated %}
+        <nav class="menu">
+            <a href="{% url 'cuentas:index' %}" {% if request.resolver_match.url_name == "index" %}class="activo"{% endif %}>Inicio</a>
+            <a href="{% url 'cuentas:servicios' %}" {% if request.resolver_match.url_name == "servicios" or request.resolver_match.url_name == "detail" or request.resolver_match.url_name == "results" %}class="activo"{% endif %}>Servicios</a>
+            <a href="{% url 'cuentas:lista' %}" {% if request.resolver_match.url_name == "lista" or request.resolver_match.url_name == "ver" %}class="activo"{% endif %}>Cuentas</a>
+            <a href="{% url 'cuentas:crear' %}" {% if request.resolver_match.url_name == "crear" %}class="activo"{% endif %}>Nueva cuenta</a>
+            <a href="{% url 'cuentas:pagadas' %}" {% if request.resolver_match.url_name == "pagadas" %}class="activo"{% endif %}>Ya pagadas</a>
+            {% if user.usuario.rol.codigo == "administrador" %}
+            <a href="{% url 'cuentas:usuarios' %}" {% if request.resolver_match.url_name == "usuarios" %}class="activo"{% endif %}>Usuarios</a>
+            {% endif %}
+        </nav>
+        <details class="perfil">
+            <summary>
+                <svg class="icono-usuario" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.2"></circle>
+                    <path d="M5.2 19.2a6.8 6.8 0 0 1 13.6 0"></path>
+                </svg>
+                <span>{{ user.username }}</span>
+            </summary>
+            <div class="menu-perfil">
+                <a href="{% url 'cuentas:perfil' %}">Ver perfil</a>
+                <form class="salir" action="{% url 'cuentas:salir' %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Salir">
+                </form>
+            </div>
+        </details>
+        {% else %}
+        <nav class="menu">
+            <a href="{% url 'cuentas:entrar' %}" {% if request.resolver_match.url_name == "entrar" %}class="activo"{% endif %}>Entrar</a>
+            <a href="{% url 'cuentas:registro' %}" {% if request.resolver_match.url_name == "registro" %}class="activo"{% endif %}>Registrarse</a>
+        </nav>
+        {% endif %}
+    </header>
+    <main class="pagina {% block clase %}{% endblock %}">
+        {% block contenido %}{% endblock %}
+    </main>
 </body>
 </html>

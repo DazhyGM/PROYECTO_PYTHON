@@ -1,0 +1,109 @@
+{% extends "cuentas/base.html" %}
+{% load humanize %}
+
+{% block contenido %}
+<h1>Usuarios</h1>
+
+<section class="tablero">
+    {% if total %}
+    <div class="torta" style="--parte: {{ porcentaje }}%;" role="img" aria-label="{{ pagadas }} pagadas y {{ pendientes }} por pagar"></div>
+    {% else %}
+    <div class="torta vacia" role="img" aria-label="Sin cuentas"></div>
+    {% endif %}
+    <div>
+        <h2>Cuentas del grupo</h2>
+        <p class="meta">{{ total }} en total. El gráfico reparte las pagadas y las que siguen por pagar.</p>
+        <ul class="leyenda">
+            <li><span class="muestra pagada"></span> Pagadas: {{ pagadas }} · ${{ valor_pagadas|intcomma }}</li>
+            <li><span class="muestra pendiente"></span> Por pagar: {{ pendientes }} · ${{ valor_pendientes|intcomma }}</li>
+        </ul>
+    </div>
+</section>
+
+<form class="formulario ancha" action="{% url 'cuentas:usuarios' %}" method="post">
+{% csrf_token %}
+<fieldset>
+    <legend><h2>Asignar cuenta</h2></legend>
+    {% if error_message %}<p class="error"><strong>{{ error_message }}</strong></p>{% endif %}
+    <p class="campo">
+        <label for="destino">Usuario del grupo</label>
+        <select name="destino" id="destino">
+            <option value="">Elige un usuario</option>
+            {% for persona in grupo %}
+            <option value="{{ persona.id }}" {% if persona.id == destino_id %}selected{% endif %}>{{ persona.user.username }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <div class="opciones">
+    {% for servicio in servicio_list %}
+        <div class="opcion">
+            <input type="radio" name="servicio" id="servicio{{ forloop.counter }}" value="{{ servicio.id }}" {% if servicio.id == servicio_id %}checked{% endif %}>
+            <label for="servicio{{ forloop.counter }}">{{ servicio.nombre }}</label>
+        </div>
+    {% endfor %}
+    </div>
+    <p class="campo">
+        <label for="mes">Mes</label>
+        <input type="text" name="mes" id="mes" value="{{ mes }}">
+    </p>
+    <p class="campo">
+        <label for="valor">Valor</label>
+        <input type="text" name="valor" id="valor" value="{{ valor }}">
+    </p>
+    <p class="campo">
+        <label for="vence">Vence (AAAA-MM-DD)</label>
+        <input type="text" name="vence" id="vence" value="{{ vence }}">
+    </p>
+    <p class="casilla">
+        <input type="checkbox" name="pagada" id="pagada" {% if pagada %}checked{% endif %}>
+        <label for="pagada">Pagada</label>
+    </p>
+</fieldset>
+<input type="submit" value="Asignar">
+</form>
+
+<h2 id="grupo">Grupo</h2>
+{% if grupo %}
+<ul class="filas">
+    {% for persona in grupo %}
+    <li>
+        <div>
+            <a class="nombre" href="#usuario-{{ persona.id }}">{{ persona.user.username }}</a>
+            <p class="meta">Usuario normal</p>
+        </div>
+        <span class="estado pendiente">{{ persona.cuenta_set.all|length }} del grupo</span>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="vacio">No hay usuarios normales en el grupo.</p>
+{% endif %}
+
+{% for persona in grupo %}
+<div class="modal" id="usuario-{{ persona.id }}">
+    <div class="modal-caja">
+        <p><a class="cerrar" href="#grupo">Cerrar</a></p>
+        <h2>{{ persona.user.username }}</h2>
+        {% if persona.cuenta_set.all %}
+        <ul class="filas">
+            {% for cuenta in persona.cuenta_set.all %}
+            <li>
+                <div>
+                    <span class="nombre">{{ cuenta.servicio }} — {{ cuenta.mes }}</span>
+                    <p class="meta">${{ cuenta.valor|intcomma }}</p>
+                </div>
+                {% if cuenta.pagada %}
+                <span class="estado pagada">Pagada</span>
+                {% else %}
+                <span class="estado pendiente">Por pagar</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="vacio">No tiene cuentas.</p>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

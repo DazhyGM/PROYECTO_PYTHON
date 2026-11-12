@@ -1,13 +1,68 @@
 {% extends "cuentas/base.html" %}
+{% load humanize %}
 
 {% block contenido %}
-    {% if servicio_list %}
-        <ul>
-        {% for servicio in servicio_list %}
-            <li><a href="{% url 'cuentas:detail' servicio.id %}">{{ servicio.nombre }}</a></li>
+<h1>Inicio</h1>
+<div class="tableros">
+    <section class="tablero">
+        {% if propias.total %}
+        <div class="torta propia" style="--parte: {{ propias.porcentaje }}%;" role="img" aria-label="{{ propias.pagadas }} cuentas propias pagadas y {{ propias.pendientes }} por pagar"></div>
+        {% else %}
+        <div class="torta vacia" role="img" aria-label="Sin cuentas propias"></div>
+        {% endif %}
+        <div>
+            <h2>Cuentas propias</h2>
+            <p class="meta">Solo las ves tú. No entran en el grupo.</p>
+            <ul class="leyenda">
+                <li><span class="muestra pagada propia"></span> Pagadas: {{ propias.pagadas }} · ${{ propias.valor_pagadas|intcomma }}</li>
+                <li><span class="muestra pendiente propia"></span> Por pagar: {{ propias.pendientes }} · ${{ propias.valor_pendientes|intcomma }}</li>
+            </ul>
+        </div>
+    </section>
+    <section class="tablero">
+        {% if grupo.total %}
+        <div class="torta" style="--parte: {{ grupo.porcentaje }}%;" role="img" aria-label="{{ grupo.pagadas }} cuentas del grupo pagadas y {{ grupo.pendientes }} por pagar"></div>
+        {% else %}
+        <div class="torta vacia" role="img" aria-label="Sin cuentas del grupo"></div>
+        {% endif %}
+        <div>
+            <h2>Cuentas del grupo</h2>
+            {% if ve_el_grupo %}
+            <p class="meta">El total de la casa. Solo el administrador ve este conjunto.</p>
+            {% else %}
+            <p class="meta">Las que el administrador te asignó.</p>
+            {% endif %}
+            <ul class="leyenda">
+                <li><span class="muestra pagada"></span> Pagadas: {{ grupo.pagadas }} · ${{ grupo.valor_pagadas|intcomma }}</li>
+                <li><span class="muestra pendiente"></span> Por pagar: {{ grupo.pendientes }} · ${{ grupo.valor_pendientes|intcomma }}</li>
+            </ul>
+        </div>
+    </section>
+</div>
+
+<h2>Pendientes</h2>
+{% if pendientes %}
+<table class="tabla">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Servicio</th>
+            <th>Valor</th>
+            <th>Tipo</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cuenta in pendientes %}
+        <tr>
+            <td>{{ cuenta.vence|date:"j F Y" }}</td>
+            <td>{{ cuenta.servicio }}</td>
+            <td>${{ cuenta.valor|intcomma }}</td>
+            <td><span class="estado pendiente{% if cuenta.alcance == 'propia' %} propia{% endif %}">{{ cuenta.get_alcance_display }}</span></td>
+        </tr>
         {% endfor %}
-        </ul>
-    {% else %}
-        <p>No hay servicios.</p>
-    {% endif %}
+    </tbody>
+</table>
+{% else %}
+<p class="vacio">No hay cuentas pendientes.</p>
+{% endif %}
 {% endblock %}

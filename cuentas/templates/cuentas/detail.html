@@ -2,16 +2,24 @@
 {% load humanize %}
 
 {% block contenido %}
-<form action="{% url 'cuentas:pagar' servicio.id %}" method="post">
+<form class="formulario" action="{% url 'cuentas:pagar' servicio.id %}" method="post">
 {% csrf_token %}
 <fieldset>
     <legend><h1>{{ servicio.nombre }}</h1></legend>
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    {% for cuenta in servicio.cuenta_set.all %}
-        <input type="radio" name="cuenta" id="cuenta{{ forloop.counter }}" value="{{ cuenta.id }}">
-        <label for="cuenta{{ forloop.counter }}">{{ cuenta.mes }} — ${{ cuenta.valor|intcomma }}{% if cuenta.pagada %} (ya pagada){% endif %}</label><br>
+    {% if error_message %}<p class="error"><strong>{{ error_message }}</strong></p>{% endif %}
+    {% if cuentas %}
+    <div class="opciones">
+    {% for cuenta in cuentas %}
+        <div class="opcion">
+            <input type="radio" name="cuenta" id="cuenta{{ forloop.counter }}" value="{{ cuenta.id }}">
+            <label for="cuenta{{ forloop.counter }}">{{ cuenta.mes }} — ${{ cuenta.valor|intcomma }}{% if cuenta.pagada %} (ya pagada){% endif %}</label>
+        </div>
     {% endfor %}
+    </div>
+    {% else %}
+    <p class="vacio">No tienes cuentas de este servicio.</p>
+    {% endif %}
 </fieldset>
-<input type="submit" value="Marcar como pagada">
+{% if cuentas %}<input type="submit" value="Marcar como pagada">{% endif %}
 </form>
 {% endblock %}

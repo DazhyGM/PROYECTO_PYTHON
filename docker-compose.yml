@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    container_name: cuentas_django_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+      - .:/app
+    restart: unless-stopped

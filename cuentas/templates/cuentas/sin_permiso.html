@@ -1,0 +1,9 @@
+{% extends "cuentas/base.html" %}
+
+{% block contenido %}
+<section class="aviso">
+    <h1>Sin permiso</h1>
+    <p>Esta página es solo para el administrador.</p>
+    <p class="pie"><a href="{% url 'cuentas:index' %}">Volver al inicio</a></p>
+</section>
+{% endblock %}
